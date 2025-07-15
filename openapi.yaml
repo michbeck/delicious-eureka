@@ -1,0 +1,105 @@
+openapi: 3.0.3
+info:
+  title: Collection API
+  version: 1.0.0
+  description: API zum Verwalten von Food Collections
+servers:
+  - url: http://localhost:8000/api/v1/collections
+paths:
+  /:
+    get:
+      summary: Liste aller Food Items
+      responses:
+        '200':
+          description: Erfolgreiche Antwort
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FoodItem'
+        '400':
+          description: Ungültige Anfrage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+        - in: query
+          name: unit
+          schema:
+            type: string
+          description: Optionale Einheit für die Ausgabe
+    post:
+      summary: Neues Food Item anlegen
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateFoodRequest'
+      responses:
+        '201':
+          description: Food Item erfolgreich erstellt
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FoodItem'
+        '400':
+          description: Ungültige Anfrage
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Interner Serverfehler
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    FoodItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        type:
+          type: string
+        quantity:
+          type: number
+        unit:
+          type: string
+      required:
+        - id
+        - name
+        - type
+        - quantity
+        - unit
+    CreateFoodRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+        quantity:
+          type: number
+        unit:
+          type: string
+      required:
+        - name
+        - type
+        - quantity
+        - unit
+    ErrorResponse:
+      type: object
+      properties:
+        message:
+          type: string
+        errors:
+          type: object
+          additionalProperties: true
+
